@@ -1,0 +1,3 @@
+panel-plugin/usermon.c
+panel-plugin/usermon-dialogs.c
+panel-plugin/usermon.desktop.in
