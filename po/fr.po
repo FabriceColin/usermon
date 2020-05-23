@@ -1,0 +1,74 @@
+# French translation for usermon
+# Copyright (C) 2020 Fabrice Colin
+# This file is distributed under the same license as the usermon package.
+# Fabrice Colin <fabrice dot colin at gmail dot com>
+# 
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: usermon 0.1\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2020-05-23 15:57+0200\n"
+"PO-Revision-Date: 2020-05-23 16:00+0100\n"
+"Last-Translator: Fabrice Colin <fabrice dot colin at gmail dot com>\n"
+"Language-Team: fr <fabrice dot colin at gmail dot com>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: panel-plugin/usermon.c:164
+msgid "1 user"
+msgstr ""
+
+#: panel-plugin/usermon.c:300
+#, c-format
+msgid "%d users"
+msgstr ""
+
+#: panel-plugin/usermon.c:323
+#, c-format
+msgid "%d users are currently logged in"
+msgstr ""
+
+#: panel-plugin/usermon-dialogs.c:47
+#, c-format
+msgid "Unable to open the following url: %s"
+msgstr ""
+
+#: panel-plugin/usermon-dialogs.c:97
+msgid "Maximum Number Of Users"
+msgstr ""
+
+#: panel-plugin/usermon-dialogs.c:101
+msgid "Ignore All Current Users"
+msgstr ""
+
+#: panel-plugin/usermon-dialogs.c:102
+msgid "Alarm Period"
+msgstr ""
+
+#: panel-plugin/usermon-dialogs.c:105
+msgid "Seconds"
+msgstr ""
+
+#. create the dialog
+#: panel-plugin/usermon-dialogs.c:169
+msgid "User Monitor Plugin"
+msgstr ""
+
+#: panel-plugin/usermon-dialogs.c:223
+msgid "User monitors plugin"
+msgstr ""
+
+#: panel-plugin/usermon-dialogs.c:226
+msgid "Copyright © 2006-2019 Xfce development team\n"
+msgstr ""
+
+#: panel-plugin/usermon.desktop.in.h:1
+msgid "User Monitor"
+msgstr ""
+
+#: panel-plugin/usermon.desktop.in.h:2
+msgid "User monitor plugin for the Xfce panel"
+msgstr ""
