@@ -14,10 +14,6 @@ distclean-local:
 distuninstallcheck_listfiles =                                          \
         find . -type f -print | grep -v ./share/icons/hicolor/icon-theme.cache
 
-rpm: dist
-	rpmbuild -ta $(PACKAGE)-$(VERSION).tar.gz
-	@rm -f $(PACKAGE)-$(VERSION).tar.gz
-
 .PHONY: ChangeLog
 
 ChangeLog: Makefile
@@ -30,7 +26,8 @@ dist-hook: ChangeLog
 EXTRA_DIST = \
 	intltool-extract.in \
 	intltool-merge.in \
-	intltool-update.in
+	intltool-update.in \
+	usermon.spec
 
 DISTCLEANFILES = \
 	intltool-extract \

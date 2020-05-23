@@ -58,4 +58,6 @@ missing
 stamp-*
 *desktop
 *gmo
+*pot
+*spec
 *tar.bz2

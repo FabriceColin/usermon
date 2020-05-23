@@ -9,10 +9,10 @@ dnl *** Version information ***
 dnl ***************************
 m4_define([usermon_version_major], [0])
 m4_define([usermon_version_minor], [0])
-m4_define([usermon_version_micro], [3])
+m4_define([usermon_version_micro], [1])
 m4_define([usermon_version_nano],  [])
-m4_define([usermon_version_build], [@REVISION@])
-m4_define([usermon_version_tag], [git])
+m4_define([usermon_version_build], [])
+m4_define([usermon_version_tag], [])
 m4_define([usermon_version], [usermon_version_major().usermon_version_minor().usermon_version_micro()ifelse(usermon_version_nano(), [], [], [.usermon_version_nano()])ifelse(usermon_version_tag(), [git], [usermon_version_tag()-usermon_version_build()], [usermon_version_tag()])])
 m4_define([usermon_default_debug], [ifelse(usermon_version_tag(), [git], [yes], [minimum])])
 
@@ -106,6 +106,7 @@ icons/48x48/Makefile
 icons/scalable/Makefile
 panel-plugin/Makefile
 po/Makefile.in
+usermon.spec
 ])
 
 dnl ***************************
