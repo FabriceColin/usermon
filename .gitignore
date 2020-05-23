@@ -28,25 +28,34 @@
 *.so.*
 *.dylib
 
-# Executables
-*.exe
-*.out
-*.app
-*.i*86
-*.x86_64
-*.hex
-
-# Debug files
-*.dSYM/
-*.su
-*.idb
-*.pdb
-
-# Kernel Module Compile Results
-*.mod*
-*.cmd
-.tmp_versions/
-modules.order
-Module.symvers
-Mkfile.old
-dkms.conf
+# Misc
+.deps
+.libs
+.intltool-merge*
+autom4te.cache
+ChangeLog
+Makefile
+Makefile.in
+Makefile.in.in
+POTFILES
+aclocal.m4
+compile
+config.guess
+config.h
+config.h.in
+config.log
+config.status
+config.sub
+configure.ac
+configure
+depcomp
+install-sh
+intltool*
+libtool
+ltmain.sh
+m4
+missing
+stamp-*
+*desktop
+*gmo
+*tar.bz2
