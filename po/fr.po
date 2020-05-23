@@ -18,57 +18,57 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 
 #: panel-plugin/usermon.c:164
-msgid "1 user"
-msgstr ""
+msgid "1 User"
+msgstr "1 Utilisateur"
 
 #: panel-plugin/usermon.c:300
 #, c-format
-msgid "%d users"
-msgstr ""
+msgid "%d Users"
+msgstr "%d Utilisateurs"
 
 #: panel-plugin/usermon.c:323
 #, c-format
 msgid "%d users are currently logged in"
-msgstr ""
+msgstr "%d utilisateurs sont maintenant logués"
 
 #: panel-plugin/usermon-dialogs.c:47
 #, c-format
-msgid "Unable to open the following url: %s"
-msgstr ""
+msgid "Unable to open the following URL: %s"
+msgstr "Impossible d'ouvrir l'URL: %s"
 
 #: panel-plugin/usermon-dialogs.c:97
 msgid "Maximum Number Of Users"
-msgstr ""
+msgstr "Utilisateurs Maximum"
 
 #: panel-plugin/usermon-dialogs.c:101
 msgid "Ignore All Current Users"
-msgstr ""
+msgstr "Ignorer Tous Les Utilisateurs"
 
 #: panel-plugin/usermon-dialogs.c:102
 msgid "Alarm Period"
-msgstr ""
+msgstr "Période de l'Alarme"
 
 #: panel-plugin/usermon-dialogs.c:105
 msgid "Seconds"
-msgstr ""
+msgstr "Secondes"
 
 #. create the dialog
 #: panel-plugin/usermon-dialogs.c:169
 msgid "User Monitor Plugin"
-msgstr ""
+msgstr "Plugin Moniteur Utilisateurs"
 
 #: panel-plugin/usermon-dialogs.c:223
-msgid "User monitors plugin"
-msgstr ""
+msgid "User monitor plugin"
+msgstr "Plugin moniteur utilisateurs"
 
 #: panel-plugin/usermon-dialogs.c:226
-msgid "Copyright © 2006-2019 Xfce development team\n"
-msgstr ""
+msgid "Copyright © 2003-2020 Fabrice Colin"
+msgstr "Copyright © 2003-2020 Fabrice Colin"
 
 #: panel-plugin/usermon.desktop.in.h:1
 msgid "User Monitor"
-msgstr ""
+msgstr "Moniteur Utilisateurs"
 
 #: panel-plugin/usermon.desktop.in.h:2
 msgid "User monitor plugin for the Xfce panel"
-msgstr ""
+msgstr "Plugin Moniteur Utilisateurs pour Xfce"

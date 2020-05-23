@@ -75,7 +75,6 @@ static void xfce_usermon_read(UserMonitorPlugin * usermon_plugin)
 	XfceRc *rc;
 	struct passwd *passwd = getpwuid(geteuid());
 	gchar *file;
-	const gchar *value;
 
 	g_debug("xfce_usermon_read");
 	/* get the plugin config file location */
@@ -92,9 +91,6 @@ static void xfce_usermon_read(UserMonitorPlugin * usermon_plugin)
 
 		if (G_LIKELY(rc != NULL)) {
 			/* read the settings */
-			value = xfce_rc_read_entry(rc, "user_name", NULL);
-			usermon_plugin->user_name = g_strdup(value);
-
 			usermon_plugin->max_users_count =
 			    xfce_rc_read_int_entry(rc, "max_users_count",
 						   DEFAULT_MAX_USERS_COUNT);
@@ -161,7 +157,7 @@ static void user_monitor_init(UserMonitorPlugin * usermon_plugin)
 	gtk_container_add(GTK_CONTAINER(usermon_plugin->ebox),
 			  usermon_plugin->hvbox);
 
-	usermon_plugin->label = gtk_label_new(_("1 user"));
+	usermon_plugin->label = gtk_label_new(_("1 User"));
 	gtk_widget_show(usermon_plugin->label);
 	gtk_box_pack_start(GTK_BOX(usermon_plugin->hvbox),
 			   usermon_plugin->label, FALSE, FALSE, 0);
@@ -198,10 +194,7 @@ static void xfce_usermon_free(XfcePanelPlugin * plugin)
 
 static gboolean xfce_usermon_size_changed(XfcePanelPlugin * plugin, gint size)
 {
-	UserMonitorPlugin *usermon_plugin;
-
 	g_debug("xfce_usermon_size_changed");
-	usermon_plugin = XFCE_USERMON_PLUGIN(plugin);
 
 	/* FIXME: handle this */
 
@@ -212,14 +205,7 @@ static gboolean xfce_usermon_size_changed(XfcePanelPlugin * plugin, gint size)
 static void
 xfce_usermon_mode_changed(XfcePanelPlugin * plugin, XfcePanelPluginMode mode)
 {
-	GtkOrientation orientation;
-	GtkOrientation panel_orientation =
-	    xfce_panel_plugin_get_orientation(plugin);
-	UserMonitorPlugin *usermon_plugin = XFCE_USERMON_PLUGIN(plugin);
-
 	g_debug("xfce_usermon_mode_changed");
-	orientation = (mode == XFCE_PANEL_PLUGIN_MODE_VERTICAL) ?
-	    GTK_ORIENTATION_VERTICAL : GTK_ORIENTATION_HORIZONTAL;
 
 	/* FIXME: handle this */
 
@@ -249,10 +235,6 @@ void xfce_usermon_save(XfcePanelPlugin * plugin)
 
 	if (G_LIKELY(rc != NULL)) {
 		/* save the settings */
-		if (usermon_plugin->user_name)
-			xfce_rc_write_entry(rc, "user_name",
-					    usermon_plugin->user_name);
-
 		xfce_rc_write_int_entry(rc, "max_users_count",
 					usermon_plugin->max_users_count);
 		xfce_rc_write_bool_entry(rc, "ignore_all_users",
@@ -297,7 +279,15 @@ static void xfce_usermon_update_users_list(void)
 	endutxent();
 
 	if (the_usermon_plugin->users_count != users_count) {
-		gchar *label_text = g_strdup_printf(_("%d users"), users_count);
+		gchar *label_text;
+
+		/* if utmp is broken for some reason, we may get 0 users */
+		if (users_count <= 1) {
+			label_text = g_strdup(_("1 User"));
+		} else {
+			label_text =
+			    g_strdup_printf(_("%d Users"), users_count);
+		}
 
 		gtk_widget_destroy(the_usermon_plugin->label);
 		the_usermon_plugin->label = gtk_label_new(label_text);

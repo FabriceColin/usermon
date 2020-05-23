@@ -44,7 +44,7 @@ static void xfce_usermon_configure_response(GtkWidget * dialog,
 					       PLUGIN_WEBSITE, NULL);
 
 		if (G_UNLIKELY(result == FALSE)) {
-			g_warning(_("Unable to open the following url: %s"),
+			g_warning(_("Unable to open the following URL: %s"),
 				  PLUGIN_WEBSITE);
 		}
 	} else {
@@ -220,10 +220,9 @@ void xfce_usermon_show_about(XfcePanelPlugin * plugin)
 			      xfce_get_license_text(XFCE_LICENSE_TEXT_GPL),
 			      "version", PACKAGE_VERSION, "program-name",
 			      PACKAGE_NAME, "comments",
-			      _("User monitors plugin"), "website",
+			      _("User monitor plugin"), "website",
 			      PLUGIN_WEBSITE, "copyright",
-			      _
-			      ("Copyright \xc2\xa9 2006-2019 Xfce development team\n"),
+			      _("Copyright \xc2\xa9 2003-2020 Fabrice Colin"),
 			      "authors", auth, NULL);
 
 	if (icon)
