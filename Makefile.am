@@ -12,7 +12,13 @@ distclean-local:
 	rm -rf *.cache *~
 
 distuninstallcheck_listfiles =                                          \
-        find . -type f -print | grep -v ./share/icons/hicolor/icon-theme.cache
+	find . -type f -print | grep -v ./share/icons/hicolor/icon-theme.cache
+
+indent:
+	indent -linux panel-plugin/usermon.c
+	indent -linux panel-plugin/usermon.h
+	indent -linux panel-plugin/usermon-dialogs.c
+	indent -linux panel-plugin/usermon-dialogs.h
 
 .PHONY: ChangeLog
 
