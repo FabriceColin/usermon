@@ -23,7 +23,7 @@ A user monitor plugin for the Xfce panel.
 %autosetup
 
 %build
-%configure
+%configure %{?_with_debug:--enable-debug=yes}
 %make_build
 
 %install
