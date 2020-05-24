@@ -284,8 +284,10 @@ static void xfce_usermon_record_user(gpointer key,
 
 	usermon_plugin = XFCE_USERMON_PLUGIN(user_data);
 
-	g_debug("xfce_usermon_record_user %s", (gchar *) key);
-	g_hash_table_insert(usermon_plugin->users_list, key, value);
+	if (key != NULL && value != NULL) {
+		g_debug("xfce_usermon_record_user %s", (gchar *) key);
+		g_hash_table_insert(usermon_plugin->users_list, key, value);
+	}
 }
 
 static void xfce_usermon_update_users_list(void)
@@ -354,8 +356,11 @@ static void xfce_usermon_update_users_list(void)
 	g_hash_table_insert(the_usermon_plugin->users_list,
 			    the_usermon_plugin->user_name,
 			    the_usermon_plugin->user_name);
-	g_hash_table_foreach(current_users_list, xfce_usermon_record_user,
-			     the_usermon_plugin);
+	if (users_count > 0) {
+		g_hash_table_foreach(current_users_list,
+				     xfce_usermon_record_user,
+				     the_usermon_plugin);
+	}
 	the_usermon_plugin->users_count =
 	    g_hash_table_size(the_usermon_plugin->users_list);
 	g_debug("Reset users list to %d", the_usermon_plugin->users_count);
