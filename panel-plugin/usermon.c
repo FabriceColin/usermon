@@ -256,7 +256,7 @@ static void xfce_usermon_notify_for_new_user(gpointer key,
 	notification_popup =
 	    notify_notification_new(_("User Monitor"),
 				    body,
-				    PACKAGE_ICON_DIR "/48x48/usermon.png");
+				    PACKAGE_ICON_DIR "/48x48/apps/usermon.png");
 
 	/* display a notification popup */
 	if (notification_popup != NULL) {
