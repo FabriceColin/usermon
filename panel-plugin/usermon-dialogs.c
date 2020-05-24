@@ -89,10 +89,14 @@ static void xfce_usermon_alarm_period_spin_changed(GtkSpinButton * spin_button,
 
 static GtkWidget *xfce_usermon_create_layout(UserMonitorPlugin * usermon_plugin)
 {
-	GtkWidget *vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 10);
-	GtkWidget *row1 = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 10);
-	GtkWidget *row2 = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 10);
-	GtkWidget *row3 = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 10);
+	GtkWidget *vbox =
+	    gtk_box_new(GTK_ORIENTATION_VERTICAL, DEFAULT_USERMON_PADDING);
+	GtkWidget *row1 =
+	    gtk_box_new(GTK_ORIENTATION_HORIZONTAL, DEFAULT_USERMON_PADDING);
+	GtkWidget *row2 =
+	    gtk_box_new(GTK_ORIENTATION_HORIZONTAL, DEFAULT_USERMON_PADDING);
+	GtkWidget *row3 =
+	    gtk_box_new(GTK_ORIENTATION_HORIZONTAL, DEFAULT_USERMON_PADDING);
 	GtkWidget *max_users_count_label =
 	    gtk_label_new(_("Maximum Number Of Users"));
 	GtkWidget *max_users_count_spin =
@@ -105,22 +109,21 @@ static GtkWidget *xfce_usermon_create_layout(UserMonitorPlugin * usermon_plugin)
 	GtkWidget *alarm_period_label_post = gtk_label_new(_("Seconds"));
 
 	gtk_box_pack_start(GTK_BOX(row1), max_users_count_label, TRUE, FALSE,
-			   TRUE);
+			   0);
 	gtk_box_pack_start(GTK_BOX(row1), GTK_WIDGET(max_users_count_spin),
-			   TRUE, FALSE, TRUE);
-	gtk_box_pack_start(GTK_BOX(vbox), row1, FALSE, FALSE, FALSE);
+			   TRUE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(vbox), row1, FALSE, FALSE, 0);
 
 	gtk_box_pack_start(GTK_BOX(row2), GTK_WIDGET(ignore_all_users_check),
-			   TRUE, FALSE, TRUE);
-	gtk_box_pack_start(GTK_BOX(vbox), row2, FALSE, FALSE, FALSE);
+			   TRUE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(vbox), row2, FALSE, FALSE, 0);
 
-	gtk_box_pack_start(GTK_BOX(row3), alarm_period_label, TRUE, FALSE,
-			   TRUE);
+	gtk_box_pack_start(GTK_BOX(row3), alarm_period_label, TRUE, FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(row3), GTK_WIDGET(alarm_period_spin), TRUE,
-			   FALSE, TRUE);
+			   FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(row3), alarm_period_label_post, TRUE, FALSE,
-			   TRUE);
-	gtk_box_pack_start(GTK_BOX(vbox), row3, FALSE, FALSE, FALSE);
+			   0);
+	gtk_box_pack_start(GTK_BOX(vbox), row3, FALSE, FALSE, 0);
 
 	gtk_spin_button_set_value(GTK_SPIN_BUTTON(max_users_count_spin),
 				  (gdouble) usermon_plugin->max_users_count);
@@ -179,7 +182,8 @@ void xfce_usermon_configure_plugin(XfcePanelPlugin * plugin)
 	/* populate the dialog */
 	vbox = gtk_dialog_get_content_area(GTK_DIALOG(dialog));
 	content = xfce_usermon_create_layout(usermon_plugin);
-	gtk_box_pack_start(GTK_BOX(vbox), content, TRUE, FALSE, TRUE);
+	gtk_box_pack_start(GTK_BOX(vbox), content, TRUE, FALSE,
+			   DEFAULT_USERMON_PADDING);
 
 	/* center dialog on the screen */
 	gtk_window_set_position(GTK_WINDOW(dialog), GTK_WIN_POS_CENTER);
