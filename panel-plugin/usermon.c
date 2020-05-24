@@ -39,10 +39,9 @@
 #include "usermon-dialogs.h"
 
 /* default settings */
-#define DEFAULT_MAX_USERS_COUNT 1
-#define DEFAULT_USERS_COUNT 1
-#define DEFAULT_IGNORE_ALL_USERS FALSE
-#define DEFAULT_ALARM_PERIOD 5
+#define DEFAULT_MAX_USERS_COUNT	1
+#define DEFAULT_USERS_COUNT	1
+#define DEFAULT_ALARM_PERIOD	5
 
 UserMonitorPlugin *the_usermon_plugin = NULL;
 
@@ -74,46 +73,44 @@ static void xfce_usermon_read(UserMonitorPlugin * usermon_plugin)
 {
 	XfceRc *rc;
 	struct passwd *passwd = getpwuid(geteuid());
-	gchar *file;
+	gchar *file_name;
 
 	g_debug("xfce_usermon_read");
+
+	/* record the current user */
+	if ((passwd != NULL) && (passwd->pw_name != NULL)) {
+		usermon_plugin->user_name = g_strdup(passwd->pw_name);
+		g_hash_table_insert(usermon_plugin->users_list,
+				    usermon_plugin->user_name,
+				    usermon_plugin->user_name);
+		usermon_plugin->users_count = 1;
+	}
+
 	/* get the plugin config file location */
-	file =
+	file_name =
 	    xfce_panel_plugin_save_location(XFCE_PANEL_PLUGIN(usermon_plugin),
 					    TRUE);
 
-	if (G_LIKELY(file != NULL)) {
+	if (G_LIKELY(file_name != NULL)) {
+		g_debug("Opening %s", file_name);
 		/* open the config file, readonly */
-		rc = xfce_rc_simple_open(file, TRUE);
+		rc = xfce_rc_simple_open(file_name, TRUE);
 
 		/* cleanup */
-		g_free(file);
+		g_free(file_name);
 
 		if (G_LIKELY(rc != NULL)) {
 			/* read the settings */
 			usermon_plugin->max_users_count =
 			    xfce_rc_read_int_entry(rc, "max_users_count",
 						   DEFAULT_MAX_USERS_COUNT);
-			usermon_plugin->ignore_all_users =
-			    xfce_rc_read_bool_entry(rc, "ignore_all_users",
-						    DEFAULT_IGNORE_ALL_USERS);
 			usermon_plugin->alarm_period =
 			    xfce_rc_read_int_entry(rc, "alarm_period",
 						   DEFAULT_ALARM_PERIOD);
 
 			/* cleanup */
 			xfce_rc_close(rc);
-
-			/* leave the function, everything went well */
-			return;
 		}
-	}
-
-	/* something went wrong, apply default values */
-	g_debug("Applying default settings");
-
-	if ((passwd != NULL) && (passwd->pw_name != NULL)) {
-		usermon_plugin->user_name = g_strdup(passwd->pw_name);
 	}
 }
 
@@ -121,34 +118,27 @@ static void user_monitor_init(UserMonitorPlugin * usermon_plugin)
 {
 	GtkOrientation orientation;
 
-	g_debug("user_monitor_init");
-	/* Indicators print a lot of warnings. By default, "wrapper"
-	   makes them critical, so the plugin "crashes" when run as an external
-	   plugin but not internal one (loaded by "xfce4-panel" itself).
-	   The following lines makes only g_error critical. */
+	/* make only g_error critical */
 	g_log_set_always_fatal(G_LOG_LEVEL_ERROR);
 
 	usermon_plugin->log_file = NULL;
 	usermon_plugin->ebox = NULL;
 	usermon_plugin->hvbox = NULL;
 	usermon_plugin->label = NULL;
+	usermon_plugin->users_list = NULL;
 	usermon_plugin->user_name = NULL;
 	usermon_plugin->max_users_count = DEFAULT_MAX_USERS_COUNT;
 	usermon_plugin->users_count = DEFAULT_USERS_COUNT;
-	usermon_plugin->ignore_all_users = DEFAULT_IGNORE_ALL_USERS;
 	usermon_plugin->alarm_period = DEFAULT_ALARM_PERIOD;
 	usermon_plugin->start_time = time(NULL);
 	usermon_plugin->last_alarm_time = 0;
-
-	/* read the user settings */
-	xfce_usermon_read(usermon_plugin);
 
 	/* get the current orientation */
 	orientation =
 	    xfce_panel_plugin_get_orientation(XFCE_PANEL_PLUGIN
 					      (usermon_plugin));
 
-	/* create some panel widgets */
+	/* create panel widgets */
 	usermon_plugin->ebox = gtk_event_box_new();
 	gtk_widget_show(usermon_plugin->ebox);
 
@@ -160,7 +150,11 @@ static void user_monitor_init(UserMonitorPlugin * usermon_plugin)
 	usermon_plugin->label = gtk_label_new(_("1 User"));
 	gtk_widget_show(usermon_plugin->label);
 	gtk_box_pack_start(GTK_BOX(usermon_plugin->hvbox),
-			   usermon_plugin->label, FALSE, FALSE, 0);
+			   usermon_plugin->label, FALSE, FALSE,
+			   DEFAULT_USERMON_PADDING);
+
+	/* create the users list */
+	usermon_plugin->users_list = g_hash_table_new(g_str_hash, g_str_equal);
 
 	the_usermon_plugin = usermon_plugin;
 }
@@ -180,6 +174,9 @@ static void xfce_usermon_free(XfcePanelPlugin * plugin)
 
 	/* destroy the panel widgets */
 	gtk_widget_destroy(usermon_plugin->hvbox);
+
+	/* destroy the users list */
+	g_hash_table_destroy(usermon_plugin->users_list);
 
 	/* cleanup the settings */
 	if (G_LIKELY(usermon_plugin->user_name != NULL))
@@ -237,8 +234,6 @@ void xfce_usermon_save(XfcePanelPlugin * plugin)
 		/* save the settings */
 		xfce_rc_write_int_entry(rc, "max_users_count",
 					usermon_plugin->max_users_count);
-		xfce_rc_write_bool_entry(rc, "ignore_all_users",
-					 usermon_plugin->ignore_all_users);
 		xfce_rc_write_int_entry(rc, "alarm_period",
 					usermon_plugin->alarm_period);
 
@@ -248,92 +243,135 @@ void xfce_usermon_save(XfcePanelPlugin * plugin)
 	}
 }
 
+static void xfce_usermon_notify_for_new_user(gpointer key,
+					     gpointer value, gpointer user_data)
+{
+	UserMonitorPlugin *usermon_plugin;
+	NotifyUrgency urgency = NOTIFY_URGENCY_NORMAL;
+	NotifyNotification *notification_popup = NULL;
+	gchar *body = g_strdup_printf(_("%s logged in"),
+				      (gchar *) key);
+
+	usermon_plugin = XFCE_USERMON_PLUGIN(user_data);
+	notification_popup =
+	    notify_notification_new(_("User Monitor"),
+				    body,
+				    PACKAGE_ICON_DIR "/48x48/usermon.png");
+
+	/* display a notification popup */
+	if (notification_popup != NULL) {
+		if (usermon_plugin->users_count >
+		    usermon_plugin->max_users_count) {
+			urgency = NOTIFY_URGENCY_CRITICAL;
+		}
+
+		notify_notification_set_timeout(notification_popup,
+						the_usermon_plugin->alarm_period
+						* 1000);
+		notify_notification_set_urgency(notification_popup, urgency);
+		notify_notification_show(notification_popup, NULL);
+
+		g_object_unref(G_OBJECT(notification_popup));
+	}
+
+	g_free(body);
+}
+
+static void xfce_usermon_record_user(gpointer key,
+				     gpointer value, gpointer user_data)
+{
+	UserMonitorPlugin *usermon_plugin;
+
+	usermon_plugin = XFCE_USERMON_PLUGIN(user_data);
+
+	g_debug("xfce_usermon_record_user %s", (gchar *) key);
+	g_hash_table_insert(usermon_plugin->users_list, key, value);
+}
+
 static void xfce_usermon_update_users_list(void)
 {
+	GHashTable *current_users_list = NULL;
+	GHashTable *new_users_list = NULL;
 	struct utmpx *u = NULL;
-	time_t now = time(NULL);
-	int users_count = 0;
+	guint users_count = 0;
 
 	g_debug("xfce_usermon_update_users_list");
 	if (the_usermon_plugin == NULL) {
 		return;
 	}
+	g_debug("Found %d users so far", the_usermon_plugin->users_count);
+
+	current_users_list = g_hash_table_new(g_str_hash, g_str_equal);
+	new_users_list = g_hash_table_new(g_str_hash, g_str_equal);
 
 	g_debug("Current user is %s", the_usermon_plugin->user_name);
-	// Rewind to the beginning of utmpx
+	/* rewind to the beginning of utmpx */
 	setutxent();
-	// Read utmp
+	/* read utmp */
 	while ((u = getutxent())) {
-		if (u->ut_type == USER_PROCESS) {
-			g_debug("Found user %s", u->ut_user);
+		if (u->ut_type != USER_PROCESS) {
+			continue;
+		}
 
-			// FIXME: Is this user in the ignore list ?
-			if (the_usermon_plugin->ignore_all_users == TRUE) {
-				// OK, don't increment the number of users and insert this user in the list
-			} else {
-				users_count++;
-			}
+		g_hash_table_insert(current_users_list, u->ut_user, u->ut_user);
+
+		/* is this a new user ? */
+		if (g_hash_table_contains
+		    (the_usermon_plugin->users_list, u->ut_user) == FALSE) {
+			g_debug("Found new user %s", u->ut_user);
+			g_hash_table_insert(new_users_list, u->ut_user,
+					    u->ut_user);
 		}
 	}
-	// Close utmpx
+	/* close utmpx */
 	endutxent();
 
+	/* update the label? */
+	users_count = g_hash_table_size(current_users_list);
 	if (the_usermon_plugin->users_count != users_count) {
-		gchar *label_text;
+		gtk_widget_destroy(the_usermon_plugin->label);
 
 		/* if utmp is broken for some reason, we may get 0 users */
 		if (users_count <= 1) {
-			label_text = g_strdup(_("1 User"));
+			the_usermon_plugin->label = gtk_label_new(_("1 User"));
 		} else {
-			label_text =
+			gchar *label_text =
 			    g_strdup_printf(_("%d Users"), users_count);
+			the_usermon_plugin->label = gtk_label_new(label_text);
+			g_free(label_text);
 		}
-
-		gtk_widget_destroy(the_usermon_plugin->label);
-		the_usermon_plugin->label = gtk_label_new(label_text);
-		gtk_box_pack_start(GTK_BOX(the_usermon_plugin->hvbox),
-				   the_usermon_plugin->label, FALSE, FALSE, 0);
 		gtk_widget_show(the_usermon_plugin->label);
-
-		the_usermon_plugin->users_count = users_count;
+		gtk_box_pack_start(GTK_BOX(the_usermon_plugin->hvbox),
+				   the_usermon_plugin->label, FALSE, FALSE,
+				   DEFAULT_USERMON_PADDING);
 	}
-	// Make sure this flag is reset
-	the_usermon_plugin->ignore_all_users = FALSE;
-	g_debug("Found %d users in total, max is %d", users_count,
-		the_usermon_plugin->max_users_count);
+	g_debug("Found %d new users, %d users in total, max is %d",
+		g_hash_table_size(new_users_list),
+		users_count, the_usermon_plugin->max_users_count);
 
-	// If the maximum number of users has been reached, trigger the alarm.
-	// Unless we have already done so less than a period ago or that the applet
-	// was started less than 5 seconds ago.
-	if ((users_count >= the_usermon_plugin->max_users_count) &&
-	    (the_usermon_plugin->last_alarm_time +
-	     the_usermon_plugin->alarm_period <= now)
-	    && (the_usermon_plugin->start_time + DEFAULT_ALARM_PERIOD <= now)) {
-		gchar *body =
-		    g_strdup_printf(_("%d users are currently logged in"),
-				    users_count);
-		NotifyNotification *notification_popup =
-		    notify_notification_new("User Monitor",
-					    body,
-					    PACKAGE_ICON_DIR
-					    "/48x48/usermon.png");
+	/* copy the current users list */
+	g_hash_table_remove_all(the_usermon_plugin->users_list);
+	g_hash_table_insert(the_usermon_plugin->users_list,
+			    the_usermon_plugin->user_name,
+			    the_usermon_plugin->user_name);
+	g_hash_table_foreach(current_users_list, xfce_usermon_record_user,
+			     the_usermon_plugin);
+	the_usermon_plugin->users_count =
+	    g_hash_table_size(the_usermon_plugin->users_list);
+	g_debug("Reset users list to %d", the_usermon_plugin->users_count);
 
-		// Display a notification popup
-		if (notification_popup != NULL) {
-			notify_notification_set_timeout(notification_popup,
-							the_usermon_plugin->
-							alarm_period * 1000);
-			notify_notification_set_urgency(notification_popup,
-							NOTIFY_URGENCY_NORMAL);
-			notify_notification_show(notification_popup, NULL);
+	/* notify for each new user */
+	if (g_hash_table_size(new_users_list) > 0) {
+		g_hash_table_foreach(new_users_list,
+				     xfce_usermon_notify_for_new_user,
+				     the_usermon_plugin);
 
-			g_object_unref(G_OBJECT(notification_popup));
-		}
-		g_free(body);
-
-		// Update the last alarm time
+		/* update the last alarm time */
 		the_usermon_plugin->last_alarm_time = time(NULL);
 	}
+
+	g_hash_table_destroy(current_users_list);
+	g_hash_table_destroy(new_users_list);
 }
 
 static void xfce_usermon_timer_handler(int sig_num)
@@ -342,12 +380,9 @@ static void xfce_usermon_timer_handler(int sig_num)
 	g_debug("xfce_usermon_timer_handler");
 	if (sig_num == SIGALRM) {
 		xfce_usermon_update_users_list();
+
 		if (getitimer(ITIMER_REAL, &new_timer) == 0) {
-			g_debug("Next timer in %ld:%ld seconds, %ld:%ld",
-				new_timer.it_interval.tv_sec,
-				new_timer.it_interval.tv_usec,
-				new_timer.it_value.tv_sec,
-				new_timer.it_value.tv_usec);
+			/* rearm the timer? */
 			if (new_timer.it_value.tv_sec == 0
 			    && new_timer.it_value.tv_usec == 0) {
 				xfce_usermon_set_timer();
@@ -444,7 +479,6 @@ static void xfce_usermon_construct(XfcePanelPlugin * plugin)
 {
 	UserMonitorPlugin *usermon_plugin = XFCE_USERMON_PLUGIN(plugin);
 
-	g_debug("xfce_usermon_construct");
 	notify_init(GETTEXT_PACKAGE);
 
 	xfce_panel_plugin_menu_show_configure(plugin);
@@ -456,11 +490,13 @@ static void xfce_usermon_construct(XfcePanelPlugin * plugin)
 	/* log messages to a file */
 	g_log_set_default_handler(xfce_usermon_log_handler, plugin);
 
-	/* Init some theme/icon stuff */
+	/* init theme/icon stuff */
 	gtk_icon_theme_append_search_path(gtk_icon_theme_get_default(),
 					  PACKAGE_ICON_DIR);
 
-	/* FIXME: initialize xfconf */
+	/* FIXME: switch to xfconf */
+	/* read the user settings */
+	xfce_usermon_read(usermon_plugin);
 
 	/* add the ebox to the panel */
 	gtk_container_add(GTK_CONTAINER(plugin), usermon_plugin->ebox);

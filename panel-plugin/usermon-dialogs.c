@@ -71,14 +71,6 @@ static void xfce_usermon_max_users_count_changed(GtkSpinButton * spin_button,
 	    gtk_spin_button_get_value_as_int(spin_button);
 }
 
-static void xfce_usermon_ignore_all_users_toggled(GtkToggleButton * check_box,
-						  UserMonitorPlugin *
-						  usermon_plugin)
-{
-	usermon_plugin->ignore_all_users =
-	    gtk_toggle_button_get_active(check_box);
-}
-
 static void xfce_usermon_alarm_period_spin_changed(GtkSpinButton * spin_button,
 						   UserMonitorPlugin *
 						   usermon_plugin)
@@ -95,14 +87,10 @@ static GtkWidget *xfce_usermon_create_layout(UserMonitorPlugin * usermon_plugin)
 	    gtk_box_new(GTK_ORIENTATION_HORIZONTAL, DEFAULT_USERMON_PADDING);
 	GtkWidget *row2 =
 	    gtk_box_new(GTK_ORIENTATION_HORIZONTAL, DEFAULT_USERMON_PADDING);
-	GtkWidget *row3 =
-	    gtk_box_new(GTK_ORIENTATION_HORIZONTAL, DEFAULT_USERMON_PADDING);
 	GtkWidget *max_users_count_label =
 	    gtk_label_new(_("Maximum Number Of Users"));
 	GtkWidget *max_users_count_spin =
 	    gtk_spin_button_new_with_range(1, 100, 1);
-	GtkWidget *ignore_all_users_check =
-	    gtk_check_button_new_with_label(_("Ignore All Current Users"));
 	GtkWidget *alarm_period_label = gtk_label_new(_("Alarm Period"));
 	GtkWidget *alarm_period_spin =
 	    gtk_spin_button_new_with_range(5, 3600, 5);
@@ -114,27 +102,17 @@ static GtkWidget *xfce_usermon_create_layout(UserMonitorPlugin * usermon_plugin)
 			   TRUE, FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(vbox), row1, FALSE, FALSE, 0);
 
-	gtk_box_pack_start(GTK_BOX(row2), GTK_WIDGET(ignore_all_users_check),
-			   TRUE, FALSE, 0);
-	gtk_box_pack_start(GTK_BOX(vbox), row2, FALSE, FALSE, 0);
-
-	gtk_box_pack_start(GTK_BOX(row3), alarm_period_label, TRUE, FALSE, 0);
-	gtk_box_pack_start(GTK_BOX(row3), GTK_WIDGET(alarm_period_spin), TRUE,
+	gtk_box_pack_start(GTK_BOX(row2), alarm_period_label, TRUE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(row2), GTK_WIDGET(alarm_period_spin), TRUE,
 			   FALSE, 0);
-	gtk_box_pack_start(GTK_BOX(row3), alarm_period_label_post, TRUE, FALSE,
+	gtk_box_pack_start(GTK_BOX(row2), alarm_period_label_post, TRUE, FALSE,
 			   0);
-	gtk_box_pack_start(GTK_BOX(vbox), row3, FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(vbox), row2, FALSE, FALSE, 0);
 
 	gtk_spin_button_set_value(GTK_SPIN_BUTTON(max_users_count_spin),
 				  (gdouble) usermon_plugin->max_users_count);
 	g_signal_connect(G_OBJECT(max_users_count_spin), "value-changed",
 			 G_CALLBACK(xfce_usermon_max_users_count_changed),
-			 usermon_plugin);
-
-	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(ignore_all_users_check),
-				     usermon_plugin->ignore_all_users);
-	g_signal_connect(G_OBJECT(ignore_all_users_check), "toggled",
-			 G_CALLBACK(xfce_usermon_ignore_all_users_toggled),
 			 usermon_plugin);
 
 	gtk_spin_button_set_value(GTK_SPIN_BUTTON(alarm_period_spin),
@@ -146,12 +124,10 @@ static GtkWidget *xfce_usermon_create_layout(UserMonitorPlugin * usermon_plugin)
 	gtk_widget_show(max_users_count_label);
 	gtk_widget_show(max_users_count_spin);
 	gtk_widget_show(row1);
-	gtk_widget_show(ignore_all_users_check);
-	gtk_widget_show(row2);
 	gtk_widget_show(alarm_period_label);
 	gtk_widget_show(alarm_period_spin);
 	gtk_widget_show(alarm_period_label_post);
-	gtk_widget_show(row3);
+	gtk_widget_show(row2);
 
 	return vbox;
 }

@@ -19,7 +19,7 @@
 #ifndef __USER_MONITOR_DIALOGS_H__
 #define __USER_MONITOR_DIALOGS_H__
 
-#define DEFAULT_USERMON_PADDING 10
+#define DEFAULT_USERMON_PADDING	10
 
 G_BEGIN_DECLS void xfce_usermon_configure_plugin(XfcePanelPlugin * plugin);
 

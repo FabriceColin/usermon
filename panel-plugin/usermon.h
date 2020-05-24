@@ -36,12 +36,14 @@ typedef struct {
 	GtkWidget *hvbox;
 	GtkWidget *label;
 
+	/* users list */
+	GHashTable *users_list;
+
 	/* settings */
 	gchar *user_name;
-	gint max_users_count;
-	gint users_count;
-	gboolean ignore_all_users;
-	gint alarm_period;
+	guint max_users_count;
+	guint users_count;
+	guint alarm_period;
 	time_t start_time;
 	time_t last_alarm_time;
 } UserMonitorPlugin;
