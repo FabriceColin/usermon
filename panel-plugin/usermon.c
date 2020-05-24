@@ -432,11 +432,7 @@ xfce_usermon_log_handler(const gchar * domain,
 		path =
 		    g_build_filename(g_get_user_cache_dir(),
 				     "xfce4-usermon_plugin-plugin.log", NULL);
-#ifdef DEBUG
-		usermon_plugin->log_file = freopen(path, "w", stderr);
-#else
 		usermon_plugin->log_file = fopen(path, "w");
-#endif
 		g_free(path);
 	}
 
@@ -458,8 +454,12 @@ xfce_usermon_log_handler(const gchar * domain,
 			prefix = "INFO";
 			break;
 		case G_LOG_LEVEL_DEBUG:
+#ifdef DEBUG
 			prefix = "DEBUG";
 			break;
+#else
+			return;
+#endif
 		default:
 			prefix = "LOG";
 			break;
@@ -470,9 +470,10 @@ xfce_usermon_log_handler(const gchar * domain,
 		fflush(usermon_plugin->log_file);
 	}
 
-	/* print log to the stdout */
-	if (level & G_LOG_LEVEL_ERROR || level & G_LOG_LEVEL_CRITICAL)
+	/* print log to stdout */
+	if (level & G_LOG_LEVEL_ERROR || level & G_LOG_LEVEL_CRITICAL) {
 		g_log_default_handler(domain, level, message, NULL);
+	}
 }
 
 static void xfce_usermon_construct(XfcePanelPlugin * plugin)
