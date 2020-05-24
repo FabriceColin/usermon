@@ -203,12 +203,7 @@ void xfce_usermon_show_about(XfcePanelPlugin * plugin)
 			      _("Copyright \xc2\xa9 2003-2020 Fabrice Colin"),
 			      "authors", auth, NULL);
 
-	if (icon)
-	{
+	if (icon) {
 		g_object_unref(G_OBJECT(icon));
-	}
-	else
-	{
-			g_debug("Failed to load icon");
 	}
 }
