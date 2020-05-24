@@ -189,13 +189,11 @@ void xfce_usermon_show_about(XfcePanelPlugin * plugin)
 	GdkPixbuf *icon;
 
 	const gchar *auth[] = {
-		"Xfce development team <xfce4-dev@xfce.org>",
+		"Fabrice Colin <fabrice.colin@gmail.com>",
 		NULL
 	};
 
-	icon =
-	    xfce_panel_pixbuf_from_source("xfce4-usermon_plugin-plugin", NULL,
-					  32);
+	icon = xfce_panel_pixbuf_from_source(PACKAGE_NAME, NULL, 48);
 	gtk_show_about_dialog(NULL, "logo", icon, "license",
 			      xfce_get_license_text(XFCE_LICENSE_TEXT_GPL),
 			      "version", PACKAGE_VERSION, "program-name",
@@ -206,5 +204,11 @@ void xfce_usermon_show_about(XfcePanelPlugin * plugin)
 			      "authors", auth, NULL);
 
 	if (icon)
+	{
 		g_object_unref(G_OBJECT(icon));
+	}
+	else
+	{
+			g_debug("Failed to load icon");
+	}
 }
