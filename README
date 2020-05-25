@@ -1,4 +1,35 @@
 # usermon
 User Monitor
+Copyright 2003-2020 Fabrice Colin <fabrice dot colin at gmail dot com>
+https://github.com/FabriceColin/usermon
 
 This is a plugin for the Xfce panel, version 4.12 or higher.
+It displays at all times how many users are currently logged in, issues
+a desktop notification when a new user logs in.
+
+Requirements
+============
+
+libxfce4ui-2		>= 4.12.0
+libxfce4panel-2.0	>= 4.12.0
+libnotify		>= 0.7.0
+
+Settings
+========
+
+The Critical Number of Users sets the threshold starting at which critical
+notifications are shown.
+The Alarm Period (in seconds) defines how often usermon should check
+for new users.
+
+History
+=======
+
+The current usermon is a Xfce port of a previous version targeting
+Jonas Aaberg's General Applet Interface library [1], developed in
+2003 and 2005 and never subsequently published.
+
+It was mostly developed on PowerBook5,4 running Void Linux PPC.
+
+[1] https://gai.sourceforge.net/library/html
+

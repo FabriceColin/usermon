@@ -1,4 +1,39 @@
-0.0.1
-=====
-- Initial port to the Xfce Panel
+xx/xx/2020 : v1.4.0
+===================
+ initial port to the Xfce Panel
+
+27/08/2005 : v1.3.3
+===================
+ compatible with GAI 0.5.10
+
+25/09/2004 : v1.3.2
+===================
+ minor changes
+ requires GAI 0.5.8 (fixes a couple of memory leaks)
+
+03/06/2004 : v1.3.0
+===================
+ use default GTK font, as detected by GAI (thanks Jonas !)
+ requires GAI 0.5.6
+
+11/04/2004 : v1.2.0
+===================
+ made font family/size configurable
+ refresh background more often to fix "right-hand side border" bug
+ added loud speaker to icon to represent an alarm
+ relabeled "Maximum number of users" to "Critical..." since that's what it is really
+ finally realized that "ignore root" & "ignore current user" should take effect immediately doh ! :-)
+ make use of new preferences window generator
+ use asynchronous gai_exec() instead of system()
+ requires GAI 0.5.3
+ switched build system to autoconf, based on the templates that come with GAI 0.5.3
+
+30/01/2004 : v1.1.0
+===================
+ added menu to applet that lets one disable alarms for all current users for the lifetime of the applet
+ requires GAI 0.5
+
+9/10/2003 : v1.0.0
+===================
+ initial version
 
