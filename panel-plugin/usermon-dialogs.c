@@ -88,7 +88,7 @@ static GtkWidget *xfce_usermon_create_layout(UserMonitorPlugin * usermon_plugin)
 	GtkWidget *row2 =
 	    gtk_box_new(GTK_ORIENTATION_HORIZONTAL, DEFAULT_USERMON_PADDING);
 	GtkWidget *max_users_count_label =
-	    gtk_label_new(_("Maximum Number Of Users"));
+	    gtk_label_new(_("Critical Number Of Users"));
 	GtkWidget *max_users_count_spin =
 	    gtk_spin_button_new_with_range(1, 100, 1);
 	GtkWidget *alarm_period_label = gtk_label_new(_("Alarm Period"));

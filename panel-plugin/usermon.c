@@ -39,7 +39,7 @@
 #include "usermon-dialogs.h"
 
 /* default settings */
-#define DEFAULT_MAX_USERS_COUNT	1
+#define DEFAULT_MAX_USERS_COUNT	2
 #define DEFAULT_USERS_COUNT	1
 #define DEFAULT_ALARM_PERIOD	5
 
