@@ -28,8 +28,8 @@ msgstr "%d Utilisateurs"
 
 #: panel-plugin/usermon.c:323
 #, c-format
-msgid "%d users are currently logged in"
-msgstr "%d utilisateurs sont maintenant logués"
+msgid "%s logged in"
+msgstr "%s s'est logué"
 
 #: panel-plugin/usermon-dialogs.c:47
 #, c-format
@@ -37,12 +37,8 @@ msgid "Unable to open the following URL: %s"
 msgstr "Impossible d'ouvrir l'URL: %s"
 
 #: panel-plugin/usermon-dialogs.c:97
-msgid "Maximum Number Of Users"
-msgstr "Utilisateurs Maximum"
-
-#: panel-plugin/usermon-dialogs.c:101
-msgid "Ignore All Current Users"
-msgstr "Ignorer Tous Les Utilisateurs"
+msgid "Critical Number Of Users"
+msgstr "Nombre d'Utilisateurs Critique"
 
 #: panel-plugin/usermon-dialogs.c:102
 msgid "Alarm Period"
