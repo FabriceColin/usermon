@@ -19,7 +19,7 @@ Settings
 
 The Critical Number of Users sets the threshold starting at which critical
 notifications are shown.
-The Alarm Period (in seconds) defines how often usermon should check
+The Alarm Period (in seconds) defines how often usermon should check utmp
 for new users.
 
 History
@@ -29,7 +29,7 @@ The current usermon is a Xfce port of a previous version targeting
 Jonas Aaberg's General Applet Interface library [1], developed in
 2003 and 2005 and never subsequently published.
 
-It was mostly developed on PowerBook5,4 running Void Linux PPC.
+It was mostly developed on a PowerBook5,4 running Void Linux PPC.
 
-[1] https://gai.sourceforge.net/library/html
+[1] https://gai.sourceforge.net/library.html
 
