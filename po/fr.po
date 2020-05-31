@@ -31,6 +31,11 @@ msgstr "%d Utilisateurs"
 msgid "%s logged in"
 msgstr "%s s'est logué"
 
+#: panel-plugin/usermon.c:309
+#, c-format
+msgid "%s logged out"
+msgstr "%s n'est plus logué"
+
 #: panel-plugin/usermon-dialogs.c:47
 #, c-format
 msgid "Unable to open the following URL: %s"

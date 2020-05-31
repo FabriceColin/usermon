@@ -36,8 +36,9 @@ typedef struct {
 	GtkWidget *hvbox;
 	GtkWidget *label;
 
-	/* users list */
-	GHashTable *users_list;
+	/* users lists */
+	GHashTable *all_users_list;
+	GHashTable *found_users_list;
 
 	/* settings */
 	gchar *user_name;

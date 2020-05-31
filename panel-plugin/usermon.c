@@ -80,7 +80,7 @@ static void xfce_usermon_read(UserMonitorPlugin * usermon_plugin)
 	/* record the current user */
 	if ((passwd != NULL) && (passwd->pw_name != NULL)) {
 		usermon_plugin->user_name = g_strdup(passwd->pw_name);
-		g_hash_table_insert(usermon_plugin->users_list,
+		g_hash_table_insert(usermon_plugin->all_users_list,
 				    usermon_plugin->user_name,
 				    usermon_plugin->user_name);
 		usermon_plugin->users_count = 1;
@@ -125,7 +125,8 @@ static void user_monitor_init(UserMonitorPlugin * usermon_plugin)
 	usermon_plugin->ebox = NULL;
 	usermon_plugin->hvbox = NULL;
 	usermon_plugin->label = NULL;
-	usermon_plugin->users_list = NULL;
+	usermon_plugin->all_users_list = NULL;
+	usermon_plugin->found_users_list = NULL;
 	usermon_plugin->user_name = NULL;
 	usermon_plugin->max_users_count = DEFAULT_MAX_USERS_COUNT;
 	usermon_plugin->users_count = DEFAULT_USERS_COUNT;
@@ -153,8 +154,11 @@ static void user_monitor_init(UserMonitorPlugin * usermon_plugin)
 			   usermon_plugin->label, FALSE, FALSE,
 			   DEFAULT_USERMON_PADDING);
 
-	/* create the users list */
-	usermon_plugin->users_list = g_hash_table_new(g_str_hash, g_str_equal);
+	/* create the users lists */
+	usermon_plugin->all_users_list =
+	    g_hash_table_new(g_str_hash, g_str_equal);
+	usermon_plugin->found_users_list =
+	    g_hash_table_new(g_str_hash, g_str_equal);
 
 	the_usermon_plugin = usermon_plugin;
 }
@@ -175,8 +179,9 @@ static void xfce_usermon_free(XfcePanelPlugin * plugin)
 	/* destroy the panel widgets */
 	gtk_widget_destroy(usermon_plugin->hvbox);
 
-	/* destroy the users list */
-	g_hash_table_destroy(usermon_plugin->users_list);
+	/* destroy the users lists */
+	g_hash_table_destroy(usermon_plugin->all_users_list);
+	g_hash_table_destroy(usermon_plugin->found_users_list);
 
 	/* cleanup the settings */
 	if (G_LIKELY(usermon_plugin->user_name != NULL))
@@ -243,16 +248,11 @@ void xfce_usermon_save(XfcePanelPlugin * plugin)
 	}
 }
 
-static void xfce_usermon_notify_for_new_user(gpointer key,
-					     gpointer value, gpointer user_data)
+static void xfce_usermon_show_notification(NotifyUrgency urgency,
+					   gchar * body, gint timeout)
 {
-	UserMonitorPlugin *usermon_plugin;
-	NotifyUrgency urgency = NOTIFY_URGENCY_NORMAL;
 	NotifyNotification *notification_popup = NULL;
-	gchar *body = g_strdup_printf(_("%s logged in"),
-				      (gchar *) key);
 
-	usermon_plugin = XFCE_USERMON_PLUGIN(user_data);
 	notification_popup =
 	    notify_notification_new(_("User Monitor"),
 				    body,
@@ -260,21 +260,62 @@ static void xfce_usermon_notify_for_new_user(gpointer key,
 
 	/* display a notification popup */
 	if (notification_popup != NULL) {
-		if (usermon_plugin->users_count >
-		    usermon_plugin->max_users_count) {
-			urgency = NOTIFY_URGENCY_CRITICAL;
-		}
-
-		notify_notification_set_timeout(notification_popup,
-						usermon_plugin->alarm_period
-						* 1000);
+		notify_notification_set_timeout(notification_popup, timeout);
 		notify_notification_set_urgency(notification_popup, urgency);
 		notify_notification_show(notification_popup, NULL);
 
 		g_object_unref(G_OBJECT(notification_popup));
 	}
+}
 
-	g_free(body);
+static void xfce_usermon_notify_for_login(gpointer key,
+					  gpointer value, gpointer user_data)
+{
+	UserMonitorPlugin *usermon_plugin;
+
+	usermon_plugin = XFCE_USERMON_PLUGIN(user_data);
+
+	if (key != NULL && value != NULL) {
+		NotifyUrgency urgency = NOTIFY_URGENCY_NORMAL;
+		gchar *body = g_strdup_printf(_("%s logged in"),
+					      (gchar *) key);
+
+		if (usermon_plugin->users_count >
+		    usermon_plugin->max_users_count) {
+			urgency = NOTIFY_URGENCY_CRITICAL;
+		}
+
+		xfce_usermon_show_notification(urgency, body,
+					       usermon_plugin->alarm_period *
+					       1000);
+
+		g_free(body);
+	}
+}
+
+static void xfce_usermon_notify_for_logout(gpointer key,
+					   gpointer value, gpointer user_data)
+{
+	UserMonitorPlugin *usermon_plugin;
+
+	usermon_plugin = XFCE_USERMON_PLUGIN(user_data);
+
+	if (key != NULL && value != NULL) {
+		NotifyUrgency urgency = NOTIFY_URGENCY_NORMAL;
+
+		/* is this user still logged in? */
+		if (g_hash_table_contains
+		    (the_usermon_plugin->found_users_list, key) == FALSE) {
+			gchar *body = g_strdup_printf(_("%s logged out"),
+						      (gchar *) key);
+
+			xfce_usermon_show_notification(urgency, body,
+						       usermon_plugin->alarm_period
+						       * 1000);
+
+			g_free(body);
+		}
+	}
 }
 
 static void xfce_usermon_record_user(gpointer key,
@@ -286,13 +327,12 @@ static void xfce_usermon_record_user(gpointer key,
 
 	if (key != NULL && value != NULL) {
 		g_debug("xfce_usermon_record_user %s", (gchar *) key);
-		g_hash_table_insert(usermon_plugin->users_list, key, value);
+		g_hash_table_insert(usermon_plugin->all_users_list, key, value);
 	}
 }
 
 static void xfce_usermon_update_users_list(void)
 {
-	GHashTable *current_users_list = NULL;
 	GHashTable *new_users_list = NULL;
 	struct utmpx *u = NULL;
 	guint users_count = 0;
@@ -303,7 +343,6 @@ static void xfce_usermon_update_users_list(void)
 	}
 	g_debug("Found %d users so far", the_usermon_plugin->users_count);
 
-	current_users_list = g_hash_table_new(g_str_hash, g_str_equal);
 	new_users_list = g_hash_table_new(g_str_hash, g_str_equal);
 
 	g_debug("Current user is %s", the_usermon_plugin->user_name);
@@ -315,11 +354,12 @@ static void xfce_usermon_update_users_list(void)
 			continue;
 		}
 
-		g_hash_table_insert(current_users_list, u->ut_user, u->ut_user);
+		g_hash_table_insert(the_usermon_plugin->found_users_list,
+				    u->ut_user, u->ut_user);
 
-		/* is this a new user ? */
+		/* is this a new user? */
 		if (g_hash_table_contains
-		    (the_usermon_plugin->users_list, u->ut_user) == FALSE) {
+		    (the_usermon_plugin->all_users_list, u->ut_user) == FALSE) {
 			g_debug("Found new user %s", u->ut_user);
 			g_hash_table_insert(new_users_list, u->ut_user,
 					    u->ut_user);
@@ -329,7 +369,7 @@ static void xfce_usermon_update_users_list(void)
 	endutxent();
 
 	/* update the label? */
-	users_count = g_hash_table_size(current_users_list);
+	users_count = g_hash_table_size(the_usermon_plugin->found_users_list);
 	if (the_usermon_plugin->users_count != users_count) {
 		gtk_widget_destroy(the_usermon_plugin->label);
 
@@ -351,31 +391,38 @@ static void xfce_usermon_update_users_list(void)
 		g_hash_table_size(new_users_list),
 		users_count, the_usermon_plugin->max_users_count);
 
+	/* check for users who have logged out since the last check */
+	if (users_count > 0) {
+		g_hash_table_foreach(the_usermon_plugin->all_users_list,
+				     xfce_usermon_notify_for_logout,
+				     the_usermon_plugin);
+	}
+
 	/* copy the current users list */
-	g_hash_table_remove_all(the_usermon_plugin->users_list);
-	g_hash_table_insert(the_usermon_plugin->users_list,
+	g_hash_table_remove_all(the_usermon_plugin->all_users_list);
+	g_hash_table_insert(the_usermon_plugin->all_users_list,
 			    the_usermon_plugin->user_name,
 			    the_usermon_plugin->user_name);
 	if (users_count > 0) {
-		g_hash_table_foreach(current_users_list,
+		g_hash_table_foreach(the_usermon_plugin->found_users_list,
 				     xfce_usermon_record_user,
 				     the_usermon_plugin);
 	}
 	the_usermon_plugin->users_count =
-	    g_hash_table_size(the_usermon_plugin->users_list);
+	    g_hash_table_size(the_usermon_plugin->all_users_list);
 	g_debug("Reset users list to %d", the_usermon_plugin->users_count);
 
 	/* notify for each new user */
 	if (g_hash_table_size(new_users_list) > 0) {
 		g_hash_table_foreach(new_users_list,
-				     xfce_usermon_notify_for_new_user,
+				     xfce_usermon_notify_for_login,
 				     the_usermon_plugin);
 
 		/* update the last alarm time */
 		the_usermon_plugin->last_alarm_time = time(NULL);
 	}
 
-	g_hash_table_destroy(current_users_list);
+	g_hash_table_remove_all(the_usermon_plugin->found_users_list);
 	g_hash_table_destroy(new_users_list);
 }
 
