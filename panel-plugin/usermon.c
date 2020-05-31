@@ -266,7 +266,7 @@ static void xfce_usermon_notify_for_new_user(gpointer key,
 		}
 
 		notify_notification_set_timeout(notification_popup,
-						the_usermon_plugin->alarm_period
+						usermon_plugin->alarm_period
 						* 1000);
 		notify_notification_set_urgency(notification_popup, urgency);
 		notify_notification_show(notification_popup, NULL);
