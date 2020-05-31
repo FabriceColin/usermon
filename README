@@ -5,7 +5,8 @@ https://github.com/FabriceColin/usermon
 
 This is a plugin for the Xfce panel, version 4.12 or higher.
 It displays at all times how many users are currently logged in, issues
-a desktop notification when a new user logs in.
+a desktop notification when a user logs in and subsequently when one
+logs out.
 
 Requirements
 ============

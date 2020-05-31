@@ -313,8 +313,8 @@ static void xfce_usermon_notify_for_logout(gpointer key,
 						      (gchar *) key);
 
 			xfce_usermon_show_notification(urgency, body,
-						       usermon_plugin->alarm_period
-						       * 1000);
+						       usermon_plugin->
+						       alarm_period * 1000);
 
 			g_free(body);
 		}
