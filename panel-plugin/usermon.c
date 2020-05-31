@@ -275,7 +275,7 @@ static void xfce_usermon_notify_for_login(gpointer key,
 
 	usermon_plugin = XFCE_USERMON_PLUGIN(user_data);
 
-	if (key != NULL && value != NULL) {
+	if (key != NULL && value != NULL && (usermon_plugin->user_name != key)) {
 		NotifyUrgency urgency = NOTIFY_URGENCY_NORMAL;
 		gchar *body = g_strdup_printf(_("%s logged in"),
 					      (gchar *) key);
@@ -300,7 +300,7 @@ static void xfce_usermon_notify_for_logout(gpointer key,
 
 	usermon_plugin = XFCE_USERMON_PLUGIN(user_data);
 
-	if (key != NULL && value != NULL) {
+	if (key != NULL && value != NULL && (usermon_plugin->user_name != key)) {
 		NotifyUrgency urgency = NOTIFY_URGENCY_NORMAL;
 
 		g_debug("xfce_usermon_notify_for_logout %s %s", (gchar *) key,
@@ -313,8 +313,8 @@ static void xfce_usermon_notify_for_logout(gpointer key,
 						      (gchar *) key);
 
 			xfce_usermon_show_notification(urgency, body,
-						       usermon_plugin->
-						       alarm_period * 1000);
+						       usermon_plugin->alarm_period
+						       * 1000);
 
 			g_free(body);
 		}
