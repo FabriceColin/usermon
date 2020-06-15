@@ -1,5 +1,4 @@
-# usermon
-User Monitor
+usermon - User Monitor
 Copyright 2003-2020 Fabrice Colin <fabrice dot colin at gmail dot com>
 https://github.com/FabriceColin/usermon
 
@@ -7,6 +6,8 @@ This is a plugin for the Xfce panel, version 4.12 or higher.
 It displays at all times how many users are currently logged in, issues
 a desktop notification when a user logs in and subsequently when one
 logs out.
+
+It was mostly developed on a PowerBook5,4 running Void Linux PPC.
 
 Requirements
 ============
@@ -29,8 +30,6 @@ History
 The current usermon is a Xfce port of a previous version targeting
 Jonas Aaberg's General Applet Interface library [1], developed in
 2003 and 2005 and never subsequently published.
-
-It was mostly developed on a PowerBook5,4 running Void Linux PPC.
 
 [1] https://gai.sourceforge.net/library.html
 
