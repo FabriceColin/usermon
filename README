@@ -15,6 +15,7 @@ Requirements
 libxfce4ui-2		>= 4.12.0
 libxfce4panel-2.0	>= 4.12.0
 libnotify		>= 0.7.0
+a session management system (or display manager) that updates utmp
 
 Settings
 ========
