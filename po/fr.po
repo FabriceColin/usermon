@@ -1,15 +1,15 @@
 # French translation for usermon
-# Copyright (C) 2020 Fabrice Colin
+# Copyright (C) 2020-2021 Fabrice Colin
 # This file is distributed under the same license as the usermon package.
 # Fabrice Colin <fabrice dot colin at gmail dot com>
-# 
+#
 #, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: usermon 0.1\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-05-23 15:57+0200\n"
-"PO-Revision-Date: 2020-05-23 16:00+0100\n"
+"POT-Creation-Date: 2021-08-15 08:42+0200\n"
+"PO-Revision-Date: 2021-08-15 07:25+0100\n"
 "Last-Translator: Fabrice Colin <fabrice dot colin at gmail dot com>\n"
 "Language-Team: fr <fabrice dot colin at gmail dot com>\n"
 "Language: \n"
@@ -17,59 +17,67 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: panel-plugin/usermon.c:164
+#: panel-plugin/usermon.c:151 panel-plugin/usermon.c:408
 msgid "1 User"
 msgstr "1 Utilisateur"
 
-#: panel-plugin/usermon.c:300
-#, c-format
-msgid "%d Users"
-msgstr "%d Utilisateurs"
+#: panel-plugin/usermon.c:257 panel-plugin/usermon-dialogs.c:152
+#: panel-plugin/usermon-dialogs.c:159 panel-plugin/usermon.desktop.in:4
+msgid "User Monitor"
+msgstr "Moniteur Utilisateurs"
 
-#: panel-plugin/usermon.c:323
+#: panel-plugin/usermon.c:280
 #, c-format
 msgid "%s logged in"
 msgstr "%s s'est logué"
 
-#: panel-plugin/usermon.c:309
+#: panel-plugin/usermon.c:312
 #, c-format
 msgid "%s logged out"
 msgstr "%s n'est plus logué"
+
+#: panel-plugin/usermon.c:411
+#, c-format
+msgid "%d Users"
+msgstr "%d Utilisateurs"
 
 #: panel-plugin/usermon-dialogs.c:47
 #, c-format
 msgid "Unable to open the following URL: %s"
 msgstr "Impossible d'ouvrir l'URL: %s"
 
+#: panel-plugin/usermon-dialogs.c:91
+msgid "Critical number of users"
+msgstr "Nombre d'utilisateurs critique"
+
+#: panel-plugin/usermon-dialogs.c:94
+msgid "Alarm period"
+msgstr "Période de l'alarme"
+
 #: panel-plugin/usermon-dialogs.c:97
-msgid "Critical Number Of Users"
-msgstr "Nombre d'Utilisateurs Critique"
+msgid "seconds"
+msgstr "secondes"
 
-#: panel-plugin/usermon-dialogs.c:102
-msgid "Alarm Period"
-msgstr "Période de l'Alarme"
+#: panel-plugin/usermon-dialogs.c:155
+msgid "_Help"
+msgstr "_Aide"
 
-#: panel-plugin/usermon-dialogs.c:105
-msgid "Seconds"
-msgstr "Secondes"
+#: panel-plugin/usermon-dialogs.c:156
+msgid "_Close"
+msgstr "_Fermer"
 
-#. create the dialog
-#: panel-plugin/usermon-dialogs.c:169
-msgid "User Monitor Plugin"
-msgstr "Plugin Moniteur Utilisateurs"
+#: panel-plugin/usermon-dialogs.c:168
+msgid "Preferences"
+msgstr "Préférences"
 
-#: panel-plugin/usermon-dialogs.c:223
+#: panel-plugin/usermon-dialogs.c:213
 msgid "User monitor plugin"
 msgstr "Plugin moniteur utilisateurs"
 
-#: panel-plugin/usermon-dialogs.c:226
-msgid "Copyright © 2003-2020 Fabrice Colin"
-msgstr "Copyright © 2003-2020 Fabrice Colin"
+#: panel-plugin/usermon-dialogs.c:215
+msgid "Copyright © 2003-2021 Fabrice Colin"
+msgstr "Copyright © 2003-2021 Fabrice Colin"
 
-#: panel-plugin/usermon.desktop.in.h:1
-msgid "User Monitor"
-msgstr "Moniteur Utilisateurs"
-
-#: panel-plugin/usermon.desktop.in.h:2
-msgid "User monitor plugin for the Xfce panel"
-msgstr "Plugin Moniteur Utilisateurs pour Xfce"
+#: panel-plugin/usermon.desktop.in:5
+msgid "Monitor and notify on user activity"
+msgstr "Surveille l'activité des utilisateurs"
