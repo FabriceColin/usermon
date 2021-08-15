@@ -1,3 +1,8 @@
+15/08/2021 : v1.4.1
+===================
+ tweaked the preferences dialog
+ check for the right version of Xfce
+
 19/09/2020 : v1.4.0
 ===================
  initial port to the Xfce Panel

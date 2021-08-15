@@ -3,7 +3,7 @@
 Name:           @PACKAGE@
 Version:        @VERSION@
 Release:        1%{?dist}
-Summary:        User monitor plugin for the Xfce panel
+Summary:        User monitor for the Xfce panel
 License:        GPLv2+
 URL:            https://github.com/FabriceColin/%{name}
 Source0:        %{name}-%{version}.tar.bz2
@@ -17,7 +17,7 @@ Requires:       libnotify >= 0.7.0
 Requires:       xfce4-panel >= %{xfceversion}
 
 %description
-A user monitor plugin for the Xfce panel.
+Monitor and notify on user activity from the Xfce panel.
 
 %prep
 %autosetup

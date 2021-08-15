@@ -1,13 +1,11 @@
 usermon - User Monitor
-Copyright 2003-2020 Fabrice Colin <fabrice dot colin at gmail dot com>
+Copyright 2003-2021 Fabrice Colin <fabrice dot colin at gmail dot com>
 https://github.com/FabriceColin/usermon
 
 This is a plugin for the Xfce panel, version 4.12 or higher.
-It displays at all times how many users are currently logged in, issues
-a desktop notification when a user logs in and subsequently when one
-logs out.
-
-It was mostly developed on a PowerBook5,4 running Void Linux PPC.
+It displays at all times how many users are currently logged in,
+issues a desktop notification when a user logs in and subsequently
+when one logs out.
 
 Requirements
 ============
@@ -20,10 +18,16 @@ a session management system (or display manager) that updates utmp
 Settings
 ========
 
-The Critical Number of Users sets the threshold starting at which critical
-notifications are shown.
-The Alarm Period (in seconds) defines how often usermon should check utmp
-for new users.
+Critical Number of Users sets the threshold starting at which
+critical notifications are shown.
+Alarm Period (in seconds) defines how often usermon should check
+utmp for new users.
+
+Acknowledgements
+================
+
+Version 1.4.0 was mostly developed on a PowerBook5,4 running the
+excellent Void Linux PPC.
 
 History
 =======

@@ -1,7 +1,7 @@
 dnl
 dnl usermon - A user monitor plugin for the Xfce panel
 dnl
-dnl 2003-2020 Fabrice Colin <fabrice.colin@gmail.com>
+dnl 2003-2021 Fabrice Colin <fabrice.colin@gmail.com>
 dnl
 
 dnl ***************************
@@ -9,7 +9,7 @@ dnl *** Version information ***
 dnl ***************************
 m4_define([usermon_version_major], [1])
 m4_define([usermon_version_minor], [4])
-m4_define([usermon_version_micro], [0])
+m4_define([usermon_version_micro], [1])
 m4_define([usermon_version_nano],  [])
 m4_define([usermon_version_build], [])
 m4_define([usermon_version_tag], [])
@@ -20,7 +20,7 @@ AC_CONFIG_MACRO_DIR([m4])
 dnl ***************************
 dnl *** Initialize autoconf ***
 dnl ***************************
-AC_COPYRIGHT([Copyright 2003-2020 Fabrice Colin. All rights reserved.])
+AC_COPYRIGHT([Copyright 2003-2021 Fabrice Colin. All rights reserved.])
 AC_INIT([usermon], [usermon_version], [https://github.com/FabriceColin/usermon/issues], [usermon])
 AC_PREREQ([2.50])
 AC_REVISION([usermon_version_build])
