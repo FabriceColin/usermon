@@ -2,7 +2,7 @@
 Type=X-XFCE-PanelPlugin
 Encoding=UTF-8
 _Name=User Monitor
-_Comment=User monitor plugin for the Xfce panel
+_Comment=Monitor and notify on user activity
 Icon=usermon
 X-XFCE-Module=usermon
 X-XFCE-Internal=false
